@@ -60,6 +60,12 @@ class JacksonClasspathTest extends Specification {
         '2.10.0',
         '2.10.1',
         '2.10.2',
+        '2.10.3',
+        '2.10.4',
+        '2.10.5',
+        '2.11.1',
+        '2.11.2',
+        '2.11.3',
      ]
 
     def setup() {
