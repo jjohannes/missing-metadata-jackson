@@ -34,22 +34,19 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
-val functionalTestSourceSet = sourceSets.create("functionalTest") {
-    compileClasspath += sourceSets.main.get().output.classesDirs
-    runtimeClasspath += sourceSets.main.get().output.classesDirs
+val functionalTest: SourceSet by sourceSets.creating
+gradlePlugin.testSourceSets(functionalTest)
+val functionalTestTask = tasks.register<Test>("functionalTest") {
+    testClassesDirs = functionalTest.output.classesDirs
+    classpath = functionalTest.runtimeClasspath
 }
-gradlePlugin.testSourceSets(functionalTestSourceSet)
-configurations.getByName("functionalTestImplementation").extendsFrom(configurations.getByName("testImplementation"))
-val functionalTest by tasks.creating(Test::class) {
-    testClassesDirs = functionalTestSourceSet.output.classesDirs
-    classpath = functionalTestSourceSet.runtimeClasspath
-}
-val check by tasks.getting(Task::class) {
-    dependsOn(functionalTest)
+tasks.check {
+    dependsOn(functionalTestTask)
 }
 
 dependencies {
     implementation(gradleApi())
+    "functionalTestImplementation"(project)
     "functionalTestImplementation"("org.spockframework:spock-core:1.2-groovy-2.5")
 }
 
@@ -84,4 +81,3 @@ license {
     exclude("**/build/*")
     exclude("**/.gradle/*")
 }
-
